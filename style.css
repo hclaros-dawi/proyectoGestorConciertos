@@ -1,0 +1,248 @@
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-image: url("Fondo.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat; /*Para que la imagen no se repita*/
+  background-attachment: fixed; /*Imagen fija mientras se desplaza el contenido*/
+  background-position: center;
+  background-color: rgb(20, 20, 70);
+}
+
+.titulos {
+  color: white;
+  background-color: rgb(20, 20, 70);
+  padding: 0.5px;
+}
+
+.titulo.pequeño {
+  font-weight: 200;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.titulo.grande {
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.evento {
+  background-color: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin: 50px;
+  max-width: 700px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  gap: 20px;
+}
+
+.evento-fecha {
+  text-align: center;
+}
+
+.fecha.dia {
+  font-size: 2rem;
+  color: #3a3a3a;
+}
+
+.fecha.mes {
+  font-size: 1.2rem;
+  color: #757575;
+}
+
+.evento-info h1 {
+  font-size: 2rem;
+  color: #333333;
+}
+
+.evento-descripcion {
+  color: #555555;
+  font-size: 1rem;
+}
+
+.fecha.hora {
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+.evento-imagen {
+  width: 300px;
+  height: 300px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.evento-boton {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  font-size: 1em;
+}
+
+.evento-boton:hover {
+  background-color: #0056b3;
+}
+
+.evento-compra {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgb(20, 20, 70);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.evento-compra h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+}
+
+.evento-compra form {
+  display: grid;
+  gap: 10px;
+}
+
+.evento-compra label {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.evento-compra input[type="number"],
+.evento-compra select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.evento-compra button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1em;
+}
+
+.evento-compra button:hover {
+  background-color: #0056b3;
+}
+
+¡.CreacionInformacion {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: grid;
+  gap: 15px;
+}
+
+.CreacionInformacion label {
+  font-size: 1rem;
+  color: #333;
+}
+
+.CreacionInformacion input[type="text"],
+.CreacionInformacion input[type="date"],
+.CreacionInformacion input[type="time"] {
+  width: 150px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 7px;
+}
+
+#resultado {
+  color: white;
+}
+
+#mensajeIngreso {
+  color: white;
+}
+
+#mensajeCompra {
+  color: rgb(69, 210, 8);
+}
+
+.boton-contenedor {
+  display: flex;
+  justify-content: center;
+}
+
+.CreacionInformacion button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.CreacionInformacion button:hover {
+  background-color: #0056b3;
+}
+
+.boton-sticky {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.boton-sticky:hover {
+  background-color: #0056b3;
+}
+
+.CreacionInformacion {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.CreacionInformacion.visible {
+  display: block;
+  opacity: 1;
+}
+
+.contenedor-form {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
