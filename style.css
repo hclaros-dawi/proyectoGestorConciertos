@@ -162,6 +162,7 @@ body {
 
 .CreacionInformacion input[type="text"],
 .CreacionInformacion input[type="date"],
+.CreacionInformacion input[type="number"],
 .CreacionInformacion input[type="time"] {
   width: 150px;
   padding: 10px;
