@@ -41,34 +41,25 @@ function determinarTemporada(fecha) {
 //FUNCIÓN PROGRAMAR RECORDATORIO
 function programarRecordatorio(diasAntes) {
   const [diasRestantes, horasRestantes] = calculoDias(fechaConcierto);
+  const mensajeRecordatorio = document.getElementById("mensajeRecordatorio");
 
-  if (diasRestantes < diasAntes) {
-    console.log(
-      diasRestantes < 0
-        ? "No puedes poner una fecha anterior"
-        : "Queda" +
-            (dias === 1
-              ? " " + diasRestantes + " dia"
-              : diasRestantes > 1
-              ? "n " + diasRestantes + " días"
-              : diasRestantes === 0 && horasRestantes > 1
-              ? "n"
-              : "") +
-            (diasRestantes > 0 ? " y" : "") +
-            (horasRestantes === 1
-              ? " " + +horasRestantes + " hora"
-              : horasRestantes > 1
-              ? " " + horasRestantes + " horas"
-              : "")
-    );
-    console.log(
-      "El concierto es el " +
-        fechaConcierto.toLocaleString +
-        " en la estación de " +
-        determinarTemporada(fechaConcierto)
-    );
+  mensajeRecordatorio.innerHTML = '';
+
+          if (diasRestantes < 0) {
+            mensajeRecordatorio.innerHTML = "No puedes poner una fecha anterior.";
+        } else {
+          mensajeRecordatorio.innerHTML =
+          "Queda" +
+          (diasRestantes === 1 ? " " + diasRestantes + " día" :
+              diasRestantes > 1 ? "n " + diasRestantes + " días" :
+                  diasRestantes === 0 && horasRestantes > 1 ? "n" : "") +
+          (diasRestantes > 0 ? " y" : "") +
+          (horasRestantes === 1 ? " " + horasRestantes + " hora" :
+              horasRestantes > 1 ? " " + horasRestantes + " horas" : "") +
+          "<br>El concierto es el " + fechaConcierto.toLocaleString() + " en la estación de " + determinarTemporada(fechaConcierto) + ".";
   }
 }
+
 //.toLocaleString()-->de obj date a string
 
 //..................................................//
@@ -92,6 +83,7 @@ function imprimirEventos() {
                <p class="fecha mes">${fechaConcierto.toLocaleString("en", {
                  weekday: "long",
                })}
+               <p id="mensajeRecordatorio"></p>
            </div>
            <div class="evento-info">
                <h1>${evento.nombre}</h1>
@@ -161,6 +153,7 @@ function crearEvento() {
   const hora = document.querySelector('input[type="time"]').value;
   const fecha = document.querySelector("#fechaConcierto").value;
   fechaConcierto = new Date(`${fecha}T${hora}:00`);
+
   let nombre = document.querySelector(
     'input[placeholder="Nombre del evento"]'
   ).value;
@@ -169,8 +162,8 @@ function crearEvento() {
     'input[placeholder="Capacidad"]'
   ).value;
 
-  if (capacidad > 200) {
-    alert("La capacidad no puede sobrepasar las 200 personas");
+  if (isNaN(capacidad) || capacidad <= 0 || capacidad > 200) {
+    alert("La capacidad debe ser un número entre 1 y 200");
     return;  
   }
 
@@ -178,10 +171,11 @@ function crearEvento() {
     'input[placeholder="Nombre Del Artista"]'
   ).value;
   artista = validarNombreArtista(artista);
+
   const idConcierto = generarIDConcierto(fechaConcierto, precioBase);
   const nuevoEvento = {
     id: idConcierto,
-    nombre,
+    nombre: formatearNombreConcierto(nombre),
     fecha: fechaConcierto,
     capacidad,
     descripcion: artista,
@@ -190,6 +184,18 @@ function crearEvento() {
 
   eventos.push(nuevoEvento);
   imprimirEventos();
+
+    //Limpiar los campos del formulario
+    document.querySelector('input[placeholder="Nombre del evento"]').value = '';
+    document.querySelector('input[placeholder="Capacidad"]').value = '';
+    document.querySelector('input[placeholder="Nombre Del Artista"]').value = '';
+    document.querySelector('input[type="time"]').value = '';
+    document.querySelector("#fechaConcierto").value = '';
+    document.querySelector("#personas").value = '';
+
+  //Programar recordatorio  
+    const diasAntes = 7;  
+    programarRecordatorio(diasAntes);  
 }
 
 //EVENT LISTENERS
