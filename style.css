@@ -164,7 +164,7 @@ body {
 .CreacionInformacion input[type="date"],
 .CreacionInformacion input[type="number"],
 .CreacionInformacion input[type="time"] {
-  width: 150px;
+  width: 175px;
   padding: 10px;
   font-size: 1rem;
   border: 1px solid #ccc;
