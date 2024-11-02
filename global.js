@@ -1,22 +1,44 @@
 let numEntradas = 0;
-let fechaConcierto;
+let fechaConcerto;
 let eventos = [];
 const precioBase = 30.25;
+const fecha = new Date(Date.now());
+
+//..................................................//
+//FUNCIÓN PARA GENERARA ID CONCIERTO (ALEATORIO)
+function generarIDConcierto(fechaConcierto, precioBase) {
+  const milisegundosFecha = fechaConcierto.getTime(); //Fecha a milisegundos
+  const precioMultiplicado = Math.round(precioBase * 2000); //Multiplicar el precio base por 2000 por ejemplo
+  const idUnico = milisegundosFecha + precioMultiplicado;
+
+  return idUnico;
+}
+
+//..................................................//
+// FUNCIÓN PARA VALIDAR DÍAS ANTES
+function validarDiasAntes(diasAntes) {
+  const numDias = parseInt(diasAntes);
+  
+  if (isNaN(numDias) || numDias < 0) {
+    return "Error: El número de días debe ser un número positivo";
+  }
+  if (numDias > 35) {  
+    return "Error: El número máximo de días para recordatorio es 35";
+  }
+  return true;
+}
 
 //..................................................//
 //FUNCIÓN CALCULAR HORAS Y DÍAS PARA CONCIERTO
-const fecha = new Date();
 //const fechaFormateada = fecha.toLocaleString();
-let dias, horas;
-
-function calculoHoras(fechaConcierto) {
+function calculoHoras(fecha, fechaConcierto) {
   return Math.ceil(
     (fechaConcierto.getTime() - fecha.getTime()) / (1000 * 60 * 60)
   );
 }
 
-function calculoDias(fechaConcierto) {
-  const totalHoras = calculoHoras(fechaConcierto);
+function calculoDias(fecha, fechaConcierto) {
+  const totalHoras = calculoHoras(fecha, fechaConcierto);
   dias = parseInt(totalHoras / 24);
   horas = totalHoras % 24;
   return [dias, horas];
@@ -28,7 +50,7 @@ function determinarTemporada(fecha) {
   const temporada = ["Invierno", "Primavera", "Verano", "Otoño"];
   const mes = fecha.getMonth();
   let index = parseInt(mes / 3);
-  if (fecha.getMonth() % 3 === 2 && fecha.getDate() >= 25) {
+  if (fecha.getMonth() % 3 === 2 && fecha.getDate() >= 21) {
     index++;
   }
   if (index >= 4) {
@@ -38,37 +60,36 @@ function determinarTemporada(fecha) {
 }
 
 //..................................................//
-//FUNCIÓN PROGRAMAR RECORDATORIO
-function programarRecordatorio(diasAntes) {
-  const [diasRestantes, horasRestantes] = calculoDias(fechaConcierto);
+//FUNCIÓN PROGRAMAR RECORDATORIOfunction programarRecordatorio(diasAntes){
+function programarRecordatorio(evento, diasAntes) {
+  //FRANCESC: he modificado esta funcion
+  const fecha = new Date(Date.now());
+  const [dias, horas] = calculoDias(fecha, new Date(evento.fecha));
+  let mensajeRemember = document.getElementById(`recordatorio-${evento.id}`);
 
-  if (diasRestantes < diasAntes) {
-    console.log(
-      diasRestantes < 0
-        ? "No puedes poner una fecha anterior"
-        : "Queda" +
-            (dias === 1
-              ? " " + diasRestantes + " dia"
-              : diasRestantes > 1
-              ? "n " + diasRestantes + " días"
-              : diasRestantes === 0 && horasRestantes > 1
-              ? "n"
-              : "") +
-            (diasRestantes > 0 ? " y" : "") +
-            (horasRestantes === 1
-              ? " " + +horasRestantes + " hora"
-              : horasRestantes > 1
-              ? " " + horasRestantes + " horas"
-              : "")
-    );
-    console.log(
-      "El concierto es el " +
-        fechaConcierto.toLocaleString +
-        " en la estación de " +
-        determinarTemporada(fechaConcierto)
-    );
+  if (dias <= diasAntes && dias >= 0) {
+    let mensaje = "Recordatorio: ";
+
+    if (dias === 0 && horas > 0) {
+      mensaje += `Quedan ${horas} horas.`;
+    } else if (dias === 1) {
+      mensaje += `Queda 1 día y ${horas} horas.`;
+    } else if (dias > 1) {
+      mensaje += `Quedan ${dias} días y ${horas} horas.`;
+    } else {
+      mensaje = "El evento ya ha pasado.";
+    }
+
+    mensajeRemember.textContent = mensaje;
+  } else {
+    mensajeRemember.textContent = "";
   }
 }
+
+setInterval(function () {
+  //FRANCESC: he añadido esto
+  eventos.forEach((evento) => programarRecordatorio(evento, evento.remember));
+}, 1000 * 60);
 //.toLocaleString()-->de obj date a string
 
 //..................................................//
@@ -79,15 +100,17 @@ function imprimirEventos() {
 
   eventos.forEach((evento) => {
     const fechaConcierto = new Date(evento.fecha);
-    const [diasRestantes, horasRestantes] = calculoDias(fechaConcierto);
+    const [diasRestantes, horasRestantes] = calculoDias(fecha, fechaConcierto);
     const temporada = determinarTemporada(fechaConcierto);
+    if (diasRestantes >= 0) {
+      //FRANCESC: he añadido un if else que se asegura de que no pongan dias anteriores al actual
+      const divEvento = document.createElement("div");
+      divEvento.className = "evento";
 
-    const divEvento = document.createElement("div");
-    divEvento.className = "evento";
-
-    divEvento.innerHTML = `
+      divEvento.innerHTML = `
 <div class="contenedor-form">
            <div class="evento-fecha">
+               <h3>ID: ${evento.id}</h3>
                <p class="fecha dia">${fechaConcierto.getDate()}</p>
                <p class="fecha mes">${fechaConcierto.toLocaleString("en", {
                  weekday: "long",
@@ -95,20 +118,18 @@ function imprimirEventos() {
            </div>
            <div class="evento-info">
                <h1>${evento.nombre}</h1>
-               <h3>ID: ${evento.id}</h3>
-               <p class="evento-descripcion">${evento.descripcion}</p>
+               <p id="recordatorio-${evento.id}"></p>
+               <p class="evento-descripcion">Descripción: ${
+                 evento.descripcion
+               }</p>
                <p class="fecha hora">${evento.hora}</p>
                <p>Faltan ${diasRestantes} día(s) y ${horasRestantes} h para el evento.</p>
                <p>Temporada: ${temporada}</p>
            </div>
            <img src="03_Print_A3_Halloween_Deathlight.jpg" alt="Imagen del evento" class="evento-imagen">
            <br><br>
-           <button class="evento-boton" onclick="mostrarDescripcion('${
-             evento.nombre
-           }', '${
-      evento.descripcion
-    }', '${fechaConcierto.toISOString()}')">Más Info</button>
-           <p id="descripcionEvento" style="margin-top: 20px; font-weight: bold;"></p>  
+          <button class="evento-boton" onclick="mostrarDescripcion('${evento.nombre}', '${evento.descripcion}', '${fechaConcierto.toISOString()}', '${evento.id}')">Más Info</button>
+           <p id="descripcionEvento-${evento.id}" style="margin-top: 20px; font-weight: bold;"></p>  
     <div class="evento-compra">
         <h2>Comprar entradas</h2>
         <form id="formCompra">
@@ -140,18 +161,12 @@ function imprimirEventos() {
         </div>
        `;
 
-    contenedorEventos.appendChild(divEvento);
+      contenedorEventos.appendChild(divEvento);
+    } else {
+      alert("No puedes crear eventos en fechas pasadas");
+      eventos.splice(eventos.indexOf(evento), 1);
+    }
   });
-}
-
-//..................................................//
-//FUNCIÓN PARA GENERARA ID CONCIERTO (ALEATORIO)
-function generarIDConcierto(fechaConcierto, precioBase) {
-  const milisegundosFecha = fechaConcierto.getTime(); //Fecha a milisegundos
-  const precioMultiplicado = Math.round(precioBase * 2000); //Multiplicar el precio base por 2000 por ejemplo
-  const idUnico = milisegundosFecha + precioMultiplicado;
-
-  return idUnico;
 }
 
 //..................................................//
@@ -172,6 +187,14 @@ function crearEvento() {
     'input[placeholder="Nombre Del Artista"]'
   ).value;
   artista = validarNombreArtista(artista);
+  let recordatorio = document.getElementById("diasAntes").value; //FRANCESC: necesitaba esto para programar recordatorio
+  
+  //Validación input recordatorio
+  let validacionRecordatorio = validarDiasAntes(recordatorio);
+  if (validacionRecordatorio != true){ 
+    alert(validacionRecordatorio);
+    return;
+  }
   const idConcierto = generarIDConcierto(fechaConcierto, precioBase);
   const nuevoEvento = {
     id: idConcierto,
@@ -180,10 +203,22 @@ function crearEvento() {
     capacidad,
     descripcion: artista,
     hora,
+    remember: recordatorio, //FRANCESC: esto tambien
   };
 
   eventos.push(nuevoEvento);
   imprimirEventos();
+
+  programarRecordatorio(nuevoEvento, nuevoEvento.remember);
+
+  //Limpiar los campos del formulario
+  document.querySelector('input[placeholder="Nombre del evento"]').value = "";
+  document.querySelector('input[placeholder="Capacidad"]').value = "";
+  document.querySelector('input[placeholder="Nombre Del Artista"]').value = "";
+  document.querySelector('input[type="time"]').value = "";
+  document.querySelector("#fechaConcierto").value = "";
+  document.querySelector("#personas").value = "";
+  document.querySelector("#diasAntes").value = "";
 }
 
 //EVENT LISTENERS
@@ -283,13 +318,13 @@ function formatearNombreConcierto(nombre) {
 
 //..................................................//
 //FUNCIÓN PARA CREAR Y MOSTRAR DESCRIPCIÓN (+ INFO)
-function mostrarDescripcion(nombreConcierto, nombreArtista, fecha) {
+function mostrarDescripcion(nombreConcierto, nombreArtista, fecha, eventoId) {
   const descripcion = crearDescripcionEvento(
     nombreConcierto,
     nombreArtista,
     fecha
   );
-  const contenedorDescripcion = document.getElementById("descripcionEvento");
+  const contenedorDescripcion = document.getElementById(`descripcionEvento-${eventoId}`);
 
   contenedorDescripcion.innerHTML = descripcion;
 }
