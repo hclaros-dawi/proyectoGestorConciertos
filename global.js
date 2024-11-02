@@ -189,12 +189,27 @@ function crearEvento() {
   artista = validarNombreArtista(artista);
   let recordatorio = document.getElementById("diasAntes").value; //FRANCESC: necesitaba esto para programar recordatorio
   
-  //Validación input recordatorio
+  //Validaciones
+  // let validacionFecha = fechaConcierto < new Date() ? "Error: La fecha del concierto no puede ser una fecha pasada." : true;
+  let validacionCapacidad = capacidad > 200 ? "Error: La capacidad no puede exceder 200 personas." : true;
   let validacionRecordatorio = validarDiasAntes(recordatorio);
-  if (validacionRecordatorio != true){ 
-    alert(validacionRecordatorio);
-    return;
+
+/* //Revisa las validaciones
+  if (validacionFecha !== true) {
+    alert(validacionFecha);
+    return; // Termina la función si hay un error
+  } */
+
+  if (validacionCapacidad !== true) {
+    alert(validacionCapacidad);
+    return; // Termina la función si hay un error
   }
+
+  if (validacionRecordatorio !== true) {
+    alert(validacionRecordatorio);
+    return; // Termina la función si hay un error
+  }
+
   const idConcierto = generarIDConcierto(fechaConcierto, precioBase);
   const nuevoEvento = {
     id: idConcierto,
