@@ -394,7 +394,7 @@ function validarNombreArtista(nombre) {
 //..................................................//
 //FUNCIÓN PARA VALIDAR NÚMERO DE ENTRADAS
 const maxEntradas = 200;
-function validarEntradasDisponibles() {
+function validarEntradasDisponibles(numEntradas) {
   if (numEntradas < 0) {
     return "Error: El número de entradas ingresadas no es válido.";
   }
