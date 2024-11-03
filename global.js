@@ -7,8 +7,8 @@ const fecha = new Date(Date.now());
 //..................................................//
 //FUNCIÓN PARA GENERARA ID CONCIERTO (ALEATORIO)
 function generarIDConcierto(fechaConcierto, precioBase) {
-  const milisegundosFecha = fechaConcierto.getTime(); 
-  const precioMultiplicado = Math.round(precioBase * 1000); 
+  const milisegundosFecha = fechaConcierto.getTime();
+  const precioMultiplicado = Math.round(precioBase * 1000);
   const idUnico = milisegundosFecha + precioMultiplicado;
 
   return idUnico;
@@ -60,7 +60,7 @@ function determinarTemporada(fecha) {
 }
 
 //..................................................//
-//FUNCIÓN PROGRAMAR RECORDATORIO 
+//FUNCIÓN PROGRAMAR RECORDATORIO
 function programarRecordatorio(evento, diasAntes) {
   const fecha = new Date(Date.now());
   const [dias, horas] = calculoDias(fecha, new Date(evento.fecha));
@@ -153,10 +153,12 @@ function imprimirEventos() {
             <br>
             <button type="button" onclick="calcularPrecioEntrada(this)">Ver Precio</button>
             <p class="resultado">Precio Total:</p>
-            <button type="button" onclick="compraEntrada(event, ${evento.id})">Comprar</button>
+            <button type="button" onclick="compraEntrada(event, ${
+              evento.id
+            })">Comprar</button>
             <p class="mensajeValidacion"></p>
             <h1 class="mensajeCompra"></h1>
-            <button type="button" onclick="calcularIngresosEsperados(this)">Ver Ingresos</button>
+            <button type="button" onclick="calcularIngresosEsperados(this, ${evento.id})">Ver Ingresos</button>
             <p class="mensajeIngreso">Ingreso Total:</p>
         </form>
         </div>
@@ -186,7 +188,7 @@ function crearEvento() {
     'input[placeholder="Nombre Del Artista"]'
   ).value;
   artista = validarNombreArtista(artista);
-  let recordatorio = document.getElementById("diasAntes").value;  
+  let recordatorio = document.getElementById("diasAntes").value;
 
   //Validaciones
   let validacionCapacidad =
@@ -197,12 +199,12 @@ function crearEvento() {
 
   if (validacionCapacidad !== true) {
     alert(validacionCapacidad);
-    return; 
+    return;
   }
 
   if (validacionRecordatorio !== true) {
     alert(validacionRecordatorio);
-    return;  
+    return;
   }
 
   const idConcierto = generarIDConcierto(fechaConcierto, precioBase);
@@ -213,8 +215,8 @@ function crearEvento() {
     capacidad,
     descripcion: artista,
     hora,
-    remember: recordatorio,  
-    entradasVendidas: 0
+    remember: recordatorio,
+    entradasVendidas: 0,
   };
 
   eventos.push(nuevoEvento);
@@ -289,7 +291,15 @@ function calcularPrecioEntrada(button) {
 
 //..................................................//
 //FUNCIÓN CALCULAR INGRESOS ESPERADOS
-function calcularIngresosEsperados(button) {
+function calcularIngresosEsperados(button, id) {
+  let evento;
+
+  for (let i = 0; i < eventos.length; i++) {
+    if (eventos[i].id == id) {
+      evento = eventos[i];
+    }
+  }
+
   const precioBase = 30.25;
   const contenedorEvento = button.closest(".evento-compra");
   const numPerson = parseInt(contenedorEvento.querySelector(".personas").value);
@@ -300,7 +310,12 @@ function calcularIngresosEsperados(button) {
     return;
   }
 
-  const ingresoTotal = numPerson * precioBase;
+  let ingresoTotal = 0;
+
+  for (let i = 0; i < evento.listaEntradasVendidas.length; i++) {
+    ingresoTotal += precioEnt(evento.listaEntradasVendidas[i]);
+  }
+
   const porcentajeArtista = 0.1;
   const cantidadArtista = Math.round(ingresoTotal * porcentajeArtista);
   const cantidadSala = ingresoTotal - cantidadArtista;
@@ -376,7 +391,6 @@ function validarEntradasDisponibles(numEntradas, evento) {
   return true;
 }
 
-
 //..................................................//
 // FUNCIÓN GESTIONAR COMPRA DE ENTRADAS
 function gestionComprarEntradas(contenedorEvento, numEntradas) {
@@ -384,8 +398,7 @@ function gestionComprarEntradas(contenedorEvento, numEntradas) {
   const mensajeElemento = contenedorEvento.querySelector(".mensajeValidacion");
 
   if (resultadoValidacion === true) {
-    const mensajeExito =
-      `Compra exitosa! Has comprado ${numEntradas} tickets.`;
+    const mensajeExito = `Compra exitosa! Has comprado ${numEntradas} tickets.`;
     mensajeElemento.innerHTML = mensajeExito;
     mensajeElemento.style.color = "green";
     return mensajeExito;
@@ -401,33 +414,45 @@ function gestionComprarEntradas(contenedorEvento, numEntradas) {
 function compraEntrada(event, id) {
   let evento;
 
-  for (let i = 0; i<eventos.length;i++){
-    if (eventos[i].id = id){
-
+  for (let i = 0; i < eventos.length; i++) {
+    if (eventos[i].id == id) {
       evento = eventos[i];
     }
-
   }
   const contenedorEvento = event.target.closest(".evento-compra");
 
   const numPersonasInput = contenedorEvento.querySelector(".personas").value;
+  const tipoEntrada = contenedorEvento.querySelector(".tipoEntrada").value;
   const numPersonas = parseInt(numPersonasInput);
-
-  if (numPersonas > 0  && numPersonas < 200 && (evento.entradasVendidas + numPersonas < evento.capacidad) ) {
+  if (
+    numPersonas > 0 &&
+    evento.entradasVendidas + numPersonas <= evento.capacidad
+  ) {
     numEntradas += numPersonas;
     evento.entradasVendidas += numPersonas;
-    const resultadoValidacion = gestionComprarEntradas(contenedorEvento, numPersonas);
+    for (let i = 0; i < numPersonas; i++) {
+      evento.listaEntradasVendidas.push(tipoEntrada);
+    }
+    const resultadoValidacion = gestionComprarEntradas(
+      contenedorEvento,
+      numPersonas
+    );
     const mensajeCompraElemento =
       contenedorEvento.querySelector(".mensajeCompra");
     mensajeCompraElemento.innerHTML = "Gracias por tu compra!";
 
     alert(`El número total de entradas vendidas es: ${numEntradas}`);
-    alert(`El número de entradas vendidas para este evento es: ${evento.entradasVendidas}`);
-    
+    alert(
+      `El número de entradas vendidas para este evento es: ${evento.entradasVendidas}`
+    );
   } else if (evento.entradasVendidas + numPersonas > evento.capacidad) {
     let entradasRestantes = evento.capacidad - evento.entradasVendidas;
-    alert(`No puedes comprar tantas entradas para este evento, solo quedan ${entradasRestantes} entradas.`);
+    alert(
+      `No puedes comprar tantas entradas para este evento, solo quedan ${entradasRestantes} entradas.`
+    );
   } else {
-    alert("No has comprado ninguna entrada. Por favor, selecciona un número válido de personas.");
+    alert(
+      "No has comprado ninguna entrada. Por favor, selecciona un número válido de personas."
+    );
   }
 }
