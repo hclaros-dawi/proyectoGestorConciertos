@@ -216,7 +216,8 @@ function crearEvento() {
     descripcion: artista,
     hora,
     remember: recordatorio,
-    entradasVendidas: 0,
+    entradasVendidas: entradasVendidas,
+    listaEntradasVendidas: []
   };
 
   eventos.push(nuevoEvento);
@@ -292,14 +293,7 @@ function calcularPrecioEntrada(button) {
 //..................................................//
 //FUNCIÓN CALCULAR INGRESOS ESPERADOS
 function calcularIngresosEsperados(button, id) {
-  let evento;
-
-  for (let i = 0; i < eventos.length; i++) {
-    if (eventos[i].id == id) {
-      evento = eventos[i];
-    }
-  }
-
+  const evento = buscarEvento(id);
   const precioBase = 30.25;
   const contenedorEvento = button.closest(".evento-compra");
   const numPerson = parseInt(contenedorEvento.querySelector(".personas").value);
@@ -321,18 +315,10 @@ function calcularIngresosEsperados(button, id) {
   const cantidadSala = ingresoTotal - cantidadArtista;
   const ingresoPorAsistente = ingresoTotal / numPerson;
 
-  contenedorEvento.querySelector(
-    ".mensajeIngreso"
-  ).innerHTML = `Los ingresos esperados totales son: ${ingresoTotal.toFixed(
-    2
-  )}€ <br>
-                 Los ingresos por asistente son: ${ingresoPorAsistente.toFixed(
-                   2
-                 )}€ <br>
-                 Cantidad destinada al artista: ${cantidadArtista.toFixed(
-                   2
-                 )}€ <br>
-                 Cantidad destinada a la sala: ${cantidadSala.toFixed(2)}€`;
+  contenedorEvento.querySelector(".mensajeIngreso").innerHTML = `Los ingresos esperados totales son: ${ingresoTotal.toFixed(2)}€ <br>
+  Los ingresos por asistente son: ${ingresoPorAsistente.toFixed(2)}€ <br>
+  Cantidad destinada al artista: ${cantidadArtista.toFixed(2)}€ <br>
+  Cantidad destinada a la sala: ${cantidadSala.toFixed(2)}€`;
 }
 
 //..................................................//
@@ -410,15 +396,18 @@ function gestionComprarEntradas(contenedorEvento, numEntradas) {
 }
 
 //..................................................//
-//FUNCIÓN COMPRAR ENTRADAS
-function compraEntrada(event, id) {
-  let evento;
-
-  for (let i = 0; i < eventos.length; i++) {
-    if (eventos[i].id == id) {
-      evento = eventos[i];
+//FUNCIÓN BUSCAR EVENTOS
+function buscarEvento(id){
+  for (let i = 0; i<eventos.length;i++){
+    if (eventos[i].id == id){
+      return eventos[i]
     }
   }
+}
+//..................................................//
+//FUNCIÓN COMPRAR ENTRADAS
+function compraEntrada(event, id) {
+  const evento = buscarEvento(id);
   const contenedorEvento = event.target.closest(".evento-compra");
 
   const numPersonasInput = contenedorEvento.querySelector(".personas").value;
