@@ -393,12 +393,13 @@ function validarNombreArtista(nombre) {
 
 //..................................................//
 //FUNCIÓN PARA VALIDAR NÚMERO DE ENTRADAS
-function validarEntradasDisponibles(numEntradas, evento) {
-  if (numEntradas <= 0) {
+const maxEntradas = 200;
+function validarEntradasDisponibles() {
+  if (numEntradas < 0) {
     return "Error: El número de entradas ingresadas no es válido.";
   }
-  if (numEntradas > evento.capacidad) {
-    return "Error: Ya no hay suficientes entradas disponibles para este evento.";
+  if (numEntradas > maxEntradas) {
+    return "Error: Ya no hay entradas disponibles.";
   }
   return true;
 }
@@ -430,6 +431,7 @@ function buscarEvento(id){
     }
   }
 }
+
 //..................................................//
 //FUNCIÓN COMPRAR ENTRADAS
 function compraEntrada(event, id) {
