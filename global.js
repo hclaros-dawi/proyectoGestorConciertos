@@ -216,7 +216,7 @@ function crearEvento() {
     descripcion: artista,
     hora,
     remember: recordatorio,
-    entradasVendidas: entradasVendidas,
+    entradasVendidas: 0,
     listaEntradasVendidas: []
   };
 
