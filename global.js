@@ -8,7 +8,7 @@ const fecha = new Date(Date.now());
 //FUNCIÓN PARA GENERARA ID CONCIERTO (ALEATORIO)
 function generarIDConcierto(fechaConcierto, precioBase) {
   const milisegundosFecha = fechaConcierto.getTime(); 
-  const precioMultiplicado = Math.round(precioBase * 2000); 
+  const precioMultiplicado = Math.round(precioBase * 1000); 
   const idUnico = milisegundosFecha + precioMultiplicado;
 
   return idUnico;
@@ -87,7 +87,7 @@ function programarRecordatorio(evento, diasAntes) {
 
 setInterval(function () {
   eventos.forEach((evento) => programarRecordatorio(evento, evento.remember));
-}, 1000 * 60);
+}, 1000 * 60 * 60);
 //.toLocaleString()-->de obj date a string
 
 //..................................................//
@@ -403,7 +403,7 @@ function compraEntrada(event) {
   const numPersonasInput = contenedorEvento.querySelector(".personas").value;
   const numPersonas = parseInt(numPersonasInput);
 
-  if (numPersonas > 0) {
+  if (numPersonas > 0 && numPersonas < 200) {
     numEntradas += numPersonas;
     const resultadoValidacion = gestionComprarEntradas(contenedorEvento, numPersonas);
     const mensajeCompraElemento =
