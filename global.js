@@ -458,10 +458,7 @@ function compraEntrada(event, id) {
       contenedorEvento.querySelector(".mensajeCompra");
     mensajeCompraElemento.innerHTML = "Gracias por tu compra!";
 
-    alert(`El número total de entradas vendidas es: ${numEntradas}`);
-    alert(
-      `El número de entradas vendidas para este evento es: ${evento.entradasVendidas}`
-    );
+    alert(`El número de entradas vendidas para este evento es: ${evento.entradasVendidas}`);
   } else if (evento.entradasVendidas + numPersonas > evento.capacidad) {
     let entradasRestantes = evento.capacidad - evento.entradasVendidas;
     alert(
