@@ -115,13 +115,13 @@ function imprimirEventos() {
            </div>
            <div class="evento-info">
                <h1>${evento.nombre}</h1>
-               <p id="recordatorio-${evento.id}"></p>
+               <p>Temporada: ${temporada}</p>
+               <p class="fecha hora">${evento.hora}</p>
                <p class="evento-descripcion">Descripción: ${
                  evento.descripcion
                }</p>
-               <p class="fecha hora">${evento.hora}</p>
-               <p>Temporada: ${temporada}</p>
-           </div>
+              <p id="recordatorio-${evento.id}"></p>
+            </div>
            <img src="03_Print_A3_Halloween_Deathlight.jpg" alt="Imagen del evento" class="evento-imagen">
            <br><br>
           <button class="evento-boton" onclick="mostrarDescripcion('${
