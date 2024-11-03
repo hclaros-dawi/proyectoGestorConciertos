@@ -339,7 +339,7 @@ function calcularIngresosEsperados(button, id) {
   const porcentajeArtista = 0.1;
   const cantidadArtista = Math.round(ingresoTotal * porcentajeArtista);
   const cantidadSala = ingresoTotal - cantidadArtista;
-  const ingresoPorAsistente = ingresoTotal / numPerson;
+  const ingresoPorAsistente = ingresoTotal / evento.listaEntradasVendidas.length;
 
   contenedorEvento.querySelector(".mensajeIngreso").innerHTML = `Los ingresos esperados totales son: ${ingresoTotal.toFixed(2)}€ <br>
   Los ingresos por asistente son: ${ingresoPorAsistente.toFixed(2)}€ <br>
