@@ -153,7 +153,7 @@ function imprimirEventos() {
             <br>
             <button type="button" onclick="calcularPrecioEntrada(this)">Ver Precio</button>
             <p class="resultado">Precio Total:</p>
-            <button type="button" onclick="compraEntrada(event)">Comprar</button>
+            <button type="button" onclick="compraEntrada(event, ${evento.id})">Comprar</button>
             <p class="mensajeValidacion"></p>
             <h1 class="mensajeCompra"></h1>
             <button type="button" onclick="calcularIngresosEsperados(this)">Ver Ingresos</button>
@@ -214,6 +214,7 @@ function crearEvento() {
     descripcion: artista,
     hora,
     remember: recordatorio,  
+    entradasVendidas: 0
   };
 
   eventos.push(nuevoEvento);
@@ -365,16 +366,16 @@ function validarNombreArtista(nombre) {
 
 //..................................................//
 //FUNCIÓN PARA VALIDAR NÚMERO DE ENTRADAS
-const maxEntradas = 200;
-function validarEntradasDisponibles() {
-  if (numEntradas < 0) {
+function validarEntradasDisponibles(numEntradas, evento) {
+  if (numEntradas <= 0) {
     return "Error: El número de entradas ingresadas no es válido.";
   }
-  if (numEntradas > maxEntradas) {
-    return "Error: Ya no hay entradas disponibles.";
+  if (numEntradas > evento.capacidad) {
+    return "Error: Ya no hay suficientes entradas disponibles para este evento.";
   }
   return true;
 }
+
 
 //..................................................//
 // FUNCIÓN GESTIONAR COMPRA DE ENTRADAS
@@ -397,23 +398,36 @@ function gestionComprarEntradas(contenedorEvento, numEntradas) {
 
 //..................................................//
 //FUNCIÓN COMPRAR ENTRADAS
-function compraEntrada(event) {
+function compraEntrada(event, id) {
+  let evento;
+
+  for (let i = 0; i<eventos.length;i++){
+    if (eventos[i].id = id){
+
+      evento = eventos[i];
+    }
+
+  }
   const contenedorEvento = event.target.closest(".evento-compra");
 
   const numPersonasInput = contenedorEvento.querySelector(".personas").value;
   const numPersonas = parseInt(numPersonasInput);
 
-  if (numPersonas > 0 && numPersonas < 200) {
+  if (numPersonas > 0  && numPersonas < 200 && (evento.entradasVendidas + numPersonas < evento.capacidad) ) {
     numEntradas += numPersonas;
+    evento.entradasVendidas += numPersonas;
     const resultadoValidacion = gestionComprarEntradas(contenedorEvento, numPersonas);
     const mensajeCompraElemento =
       contenedorEvento.querySelector(".mensajeCompra");
     mensajeCompraElemento.innerHTML = "Gracias por tu compra!";
 
-    alert(`El número de entradas vendidas es ${numEntradas}`);
+    alert(`El número total de entradas vendidas es: ${numEntradas}`);
+    alert(`El número de entradas vendidas para este evento es: ${evento.entradasVendidas}`);
+    
+  } else if (evento.entradasVendidas + numPersonas > evento.capacidad) {
+    let entradasRestantes = evento.capacidad - evento.entradasVendidas;
+    alert(`No puedes comprar tantas entradas para este evento, solo quedan ${entradasRestantes} entradas.`);
   } else {
-    alert(
-      "No has comprado ninguna entrada. Por favor, selecciona un número válido de personas."
-    );
+    alert("No has comprado ninguna entrada. Por favor, selecciona un número válido de personas.");
   }
 }
