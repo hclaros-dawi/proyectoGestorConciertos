@@ -120,7 +120,6 @@ function imprimirEventos() {
                  evento.descripcion
                }</p>
                <p class="fecha hora">${evento.hora}</p>
-               <p>Faltan ${diasRestantes} día(s) y ${horasRestantes} h para el evento.</p>
                <p>Temporada: ${temporada}</p>
            </div>
            <img src="03_Print_A3_Halloween_Deathlight.jpg" alt="Imagen del evento" class="evento-imagen">
