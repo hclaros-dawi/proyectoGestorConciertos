@@ -60,9 +60,8 @@ function determinarTemporada(fecha) {
 }
 
 //..................................................//
-//FUNCIÓN PROGRAMAR RECORDATORIOfunction programarRecordatorio(diasAntes){
+//FUNCIÓN PROGRAMAR RECORDATORIO 
 function programarRecordatorio(evento, diasAntes) {
-  //FRANCESC: he modificado esta funcion
   const fecha = new Date(Date.now());
   const [dias, horas] = calculoDias(fecha, new Date(evento.fecha));
   let mensajeRemember = document.getElementById(`recordatorio-${evento.id}`);
@@ -87,7 +86,6 @@ function programarRecordatorio(evento, diasAntes) {
 }
 
 setInterval(function () {
-  //FRANCESC: he añadido esto
   eventos.forEach((evento) => programarRecordatorio(evento, evento.remember));
 }, 1000 * 60);
 //.toLocaleString()-->de obj date a string
@@ -103,12 +101,11 @@ function imprimirEventos() {
     const [diasRestantes, horasRestantes] = calculoDias(fecha, fechaConcierto);
     const temporada = determinarTemporada(fechaConcierto);
     if (diasRestantes >= 0) {
-      //FRANCESC: he añadido un if else que se asegura de que no pongan dias anteriores al actual
       const divEvento = document.createElement("div");
       divEvento.className = "evento";
 
       divEvento.innerHTML = `
-<div class="contenedor-form">
+      <div class="contenedor-form">
            <div class="evento-fecha">
                <h3>ID: ${evento.id}</h3>
                <p class="fecha dia">${fechaConcierto.getDate()}</p>
@@ -176,7 +173,6 @@ function imprimirEventos() {
 //..................................................//
 //FUNCIÓN CREAR EVENTO
 function crearEvento() {
-  //Creo objecto fecha con hora
   const hora = document.querySelector('input[type="time"]').value;
   const fecha = document.querySelector("#fechaConcierto").value;
   fechaConcierto = new Date(`${fecha}T${hora}:00`);
@@ -191,30 +187,23 @@ function crearEvento() {
     'input[placeholder="Nombre Del Artista"]'
   ).value;
   artista = validarNombreArtista(artista);
-  let recordatorio = document.getElementById("diasAntes").value; //FRANCESC: necesitaba esto para programar recordatorio
+  let recordatorio = document.getElementById("diasAntes").value;  
 
   //Validaciones
-  // let validacionFecha = fechaConcierto < new Date() ? "Error: La fecha del concierto no puede ser una fecha pasada." : true;
   let validacionCapacidad =
     capacidad > 200
       ? "Error: La capacidad no puede exceder 200 personas."
       : true;
   let validacionRecordatorio = validarDiasAntes(recordatorio);
 
-  /*   //Revisa las validaciones
-  if (validacionFecha !== true) {
-    alert(validacionFecha);
-    return; // Termina la función si hay un error
-  } */
-
   if (validacionCapacidad !== true) {
     alert(validacionCapacidad);
-    return; // Termina la función si hay un error
+    return; 
   }
 
   if (validacionRecordatorio !== true) {
     alert(validacionRecordatorio);
-    return; // Termina la función si hay un error
+    return;  
   }
 
   const idConcierto = generarIDConcierto(fechaConcierto, precioBase);
@@ -225,7 +214,7 @@ function crearEvento() {
     capacidad,
     descripcion: artista,
     hora,
-    remember: recordatorio, //FRANCESC: esto tambien
+    remember: recordatorio,  
   };
 
   eventos.push(nuevoEvento);
@@ -296,7 +285,6 @@ function calcularPrecioEntrada(button) {
     ".resultado"
   ).innerHTML = `Precio Total: ${precioFinal.toFixed(2)}€`;
 }
-
 //document.getElementById("crear-evento").addEventListener("click", crearEvento);
 
 //..................................................//
