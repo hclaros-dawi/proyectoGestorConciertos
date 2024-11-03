@@ -172,16 +172,20 @@ body {
   margin: 7px;
 }
 
-#resultado {
+.resultado {
   color: white;
 }
 
-#mensajeIngreso {
+.boton-sticky {
   color: white;
 }
 
-#mensajeCompra {
+.mensajeCompra {
   color: rgb(69, 210, 8);
+}
+
+.mensajeIngreso {
+  color: white;
 }
 
 .boton-contenedor {
