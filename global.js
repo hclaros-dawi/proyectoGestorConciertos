@@ -7,8 +7,8 @@ const fecha = new Date(Date.now());
 //..................................................//
 //FUNCIÓN PARA GENERARA ID CONCIERTO (ALEATORIO)
 function generarIDConcierto(fechaConcierto, precioBase) {
-  const milisegundosFecha = fechaConcierto.getTime(); //Fecha a milisegundos
-  const precioMultiplicado = Math.round(precioBase * 2000); //Multiplicar el precio base por 2000 por ejemplo
+  const milisegundosFecha = fechaConcierto.getTime(); 
+  const precioMultiplicado = Math.round(precioBase * 2000); 
   const idUnico = milisegundosFecha + precioMultiplicado;
 
   return idUnico;
@@ -18,11 +18,11 @@ function generarIDConcierto(fechaConcierto, precioBase) {
 // FUNCIÓN PARA VALIDAR DÍAS ANTES
 function validarDiasAntes(diasAntes) {
   const numDias = parseInt(diasAntes);
-  
+
   if (isNaN(numDias) || numDias < 0) {
     return "Error: El número de días debe ser un número positivo";
   }
-  if (numDias > 35) {  
+  if (numDias > 35) {
     return "Error: El número máximo de días para recordatorio es 35";
   }
   return true;
@@ -128,13 +128,19 @@ function imprimirEventos() {
            </div>
            <img src="03_Print_A3_Halloween_Deathlight.jpg" alt="Imagen del evento" class="evento-imagen">
            <br><br>
-          <button class="evento-boton" onclick="mostrarDescripcion('${evento.nombre}', '${evento.descripcion}', '${fechaConcierto.toISOString()}', '${evento.id}')">Más Info</button>
-           <p id="descripcionEvento-${evento.id}" style="margin-top: 20px; font-weight: bold;"></p>  
+          <button class="evento-boton" onclick="mostrarDescripcion('${
+            evento.nombre
+          }', '${evento.descripcion}', '${fechaConcierto.toISOString()}', '${
+        evento.id
+      }')">Más Info</button>
+           <p id="descripcionEvento-${
+             evento.id
+           }" style="margin-top: 20px; font-weight: bold;"></p>  
     <div class="evento-compra">
         <h2>Comprar entradas</h2>
         <form id="formCompra">
             <label for="tipoEntrada">Tipo de Entrada:</label>
-            <select id="tipoEntrada" name="tipoEntrada">
+            <select class="tipoEntrada">
                 <option value="general">General</option>
                 <option value="infantil">Infantil (4-12 años)</option>
                 <option value="pmr">Movilidad Reducida</option>
@@ -147,20 +153,18 @@ function imprimirEventos() {
             </select>
             <br><br>
             <label for="numPersonas">Número de Personas:</label>
-            <input type="number" id="personas" name="personas">
+            <input type="number" class="personas" name="personas">
             <br>
-            <button type="button" onclick="calcularPrecioEntrada()">Ver Precio</button>
-            <p id="resultado">Precio Total:</p>
-            <button type="button" onclick="compraEntrada()">Comprar</button>
-            <p id="mensajeValidacion"></p>
-            <h1 id="mensajeCompra"></h1>
-            <button type="button" onclick="calcularIngresosEsperados(document.querySelector('#personas').value)">Ver Ingresos</button>
-            <p id="mensajeIngreso">Ingreso Total:</p>
+            <button type="button" onclick="calcularPrecioEntrada(this)">Ver Precio</button>
+            <p class="resultado">Precio Total:</p>
+            <button type="button" onclick="compraEntrada(event)">Comprar</button>
+            <p class="mensajeValidacion"></p>
+            <h1 class="mensajeCompra"></h1>
+            <button type="button" onclick="calcularIngresosEsperados(this)">Ver Ingresos</button>
+            <p class="mensajeIngreso">Ingreso Total:</p>
         </form>
         </div>
-        </div>
-       `;
-
+        </div>`;
       contenedorEventos.appendChild(divEvento);
     } else {
       alert("No puedes crear eventos en fechas pasadas");
@@ -188,13 +192,16 @@ function crearEvento() {
   ).value;
   artista = validarNombreArtista(artista);
   let recordatorio = document.getElementById("diasAntes").value; //FRANCESC: necesitaba esto para programar recordatorio
-  
+
   //Validaciones
   // let validacionFecha = fechaConcierto < new Date() ? "Error: La fecha del concierto no puede ser una fecha pasada." : true;
-  let validacionCapacidad = capacidad > 200 ? "Error: La capacidad no puede exceder 200 personas." : true;
+  let validacionCapacidad =
+    capacidad > 200
+      ? "Error: La capacidad no puede exceder 200 personas."
+      : true;
   let validacionRecordatorio = validarDiasAntes(recordatorio);
 
-/* //Revisa las validaciones
+  /*   //Revisa las validaciones
   if (validacionFecha !== true) {
     alert(validacionFecha);
     return; // Termina la función si hay un error
@@ -232,20 +239,18 @@ function crearEvento() {
   document.querySelector('input[placeholder="Nombre Del Artista"]').value = "";
   document.querySelector('input[type="time"]').value = "";
   document.querySelector("#fechaConcierto").value = "";
-  document.querySelector("#personas").value = "";
   document.querySelector("#diasAntes").value = "";
 }
 
 //EVENT LISTENERS
-document
-  .querySelector(".CreacionInformacion button")
-  .addEventListener("click", crearEvento);
 document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("crear-evento")
     .addEventListener("click", crearEvento);
+
   const botonSticky = document.querySelector(".boton-sticky");
   const formulario = document.querySelector(".CreacionInformacion");
+
   botonSticky.addEventListener("click", () => {
     formulario.classList.toggle("visible");
   });
@@ -253,13 +258,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //..................................................//
 //FUNCIÓN CALCULAR PRECIO ENTRADA
-function calcularPrecioEntrada() {
+function calcularPrecioEntrada(button) {
   let precioFinal = 0;
-  const tipoEntrada = document.querySelector("#tipoEntrada").value;
-  const numPerson = parseInt(document.querySelector("#personas").value);
+  const contenedorEvento = button.closest(".evento-compra");
+  const tipoEntrada = contenedorEvento.querySelector(".tipoEntrada").value;
+  const numPerson = parseInt(contenedorEvento.querySelector(".personas").value);
 
   if (isNaN(numPerson) || numPerson <= 0) {
-    document.querySelector("#resultado").innerHTML =
+    document.querySelector(".resultado").innerHTML =
       "Introduce un número válido de personas";
     return;
   }
@@ -286,21 +292,22 @@ function calcularPrecioEntrada() {
       break;
   }
 
-  document.querySelector(
-    "#resultado"
+  contenedorEvento.querySelector(
+    ".resultado"
   ).innerHTML = `Precio Total: ${precioFinal.toFixed(2)}€`;
-  numEntradas += numPerson; //Actualiza el total de entradas compradas
 }
 
-document.getElementById("crear-evento").addEventListener("click", crearEvento);
+//document.getElementById("crear-evento").addEventListener("click", crearEvento);
 
 //..................................................//
 //FUNCIÓN CALCULAR INGRESOS ESPERADOS
-function calcularIngresosEsperados(numPerson) {
+function calcularIngresosEsperados(button) {
   const precioBase = 30.25;
+  const contenedorEvento = button.closest(".evento-compra");
+  const numPerson = parseInt(contenedorEvento.querySelector(".personas").value);
 
   if (isNaN(numPerson) || numPerson <= 0) {
-    document.getElementById("mensajeIngreso").innerHTML =
+    contenedorEvento.querySelector(".mensajeIngreso").innerHTML =
       "Error: El número de personas es inválido";
     return;
   }
@@ -311,14 +318,18 @@ function calcularIngresosEsperados(numPerson) {
   const cantidadSala = ingresoTotal - cantidadArtista;
   const ingresoPorAsistente = ingresoTotal / numPerson;
 
-  document.getElementById(
-    "mensajeIngreso"
+  contenedorEvento.querySelector(
+    ".mensajeIngreso"
   ).innerHTML = `Los ingresos esperados totales son: ${ingresoTotal.toFixed(
     2
   )}€ <br>
-         Los ingresos por asistente son: ${ingresoPorAsistente.toFixed(2)}€ <br>
-         Cantidad destinada al artista: ${cantidadArtista.toFixed(2)}€ <br>
-         Cantidad destinada a la sala: ${cantidadSala.toFixed(2)}€`;
+                 Los ingresos por asistente son: ${ingresoPorAsistente.toFixed(
+                   2
+                 )}€ <br>
+                 Cantidad destinada al artista: ${cantidadArtista.toFixed(
+                   2
+                 )}€ <br>
+                 Cantidad destinada a la sala: ${cantidadSala.toFixed(2)}€`;
 }
 
 //..................................................//
@@ -339,7 +350,9 @@ function mostrarDescripcion(nombreConcierto, nombreArtista, fecha, eventoId) {
     nombreArtista,
     fecha
   );
-  const contenedorDescripcion = document.getElementById(`descripcionEvento-${eventoId}`);
+  const contenedorDescripcion = document.getElementById(
+    `descripcionEvento-${eventoId}`
+  );
 
   contenedorDescripcion.innerHTML = descripcion;
 }
@@ -378,28 +391,39 @@ function validarEntradasDisponibles() {
 
 //..................................................//
 // FUNCIÓN GESTIONAR COMPRA DE ENTRADAS
-function gestionComprarEntradas() {
-  const resultadoValidacion = validarEntradasDisponibles();
+function gestionComprarEntradas(contenedorEvento, numEntradas) {
+  const resultadoValidacion = validarEntradasDisponibles(numEntradas);
+  const mensajeElemento = contenedorEvento.querySelector(".mensajeValidacion");
 
-  const mensajeElemento = document.getElementById("mensajeValidacion");
   if (resultadoValidacion === true) {
-    mensajeElemento.innerHTML =
-      "Compra exitosa! Has comprado " + numEntradas + " tickets.";
+    const mensajeExito =
+      `Compra exitosa! Has comprado ${numEntradas} tickets.`;
+    mensajeElemento.innerHTML = mensajeExito;
     mensajeElemento.style.color = "green";
+    return mensajeExito;
   } else {
     mensajeElemento.innerHTML = resultadoValidacion;
     mensajeElemento.style.color = "red";
+    return resultadoValidacion;
   }
 }
 
 //..................................................//
 //FUNCIÓN COMPRAR ENTRADAS
-function compraEntrada() {
-  if (numEntradas > 0) {
-    gestionComprarEntradas();
-    document.getElementById("mensajeCompra").innerHTML =
-      "Gracias por tu compra!";
-    alert("El número de entradas vendidas es " + numEntradas);
+function compraEntrada(event) {
+  const contenedorEvento = event.target.closest(".evento-compra");
+
+  const numPersonasInput = contenedorEvento.querySelector(".personas").value;
+  const numPersonas = parseInt(numPersonasInput);
+
+  if (numPersonas > 0) {
+    numEntradas += numPersonas;
+    const resultadoValidacion = gestionComprarEntradas(contenedorEvento, numPersonas);
+    const mensajeCompraElemento =
+      contenedorEvento.querySelector(".mensajeCompra");
+    mensajeCompraElemento.innerHTML = "Gracias por tu compra!";
+
+    alert(`El número de entradas vendidas es ${numEntradas}`);
   } else {
     alert(
       "No has comprado ninguna entrada. Por favor, selecciona un número válido de personas."
