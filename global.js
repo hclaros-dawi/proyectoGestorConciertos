@@ -291,6 +291,32 @@ function calcularPrecioEntrada(button) {
 //document.getElementById("crear-evento").addEventListener("click", crearEvento);
 
 //..................................................//
+//FUNCIÓN PRECIO ENT
+function precioEnt(tipoEntrada){
+  switch (tipoEntrada) {
+    case "general":
+      return precioBase;
+      break;
+    case "infantil":
+    case "pmr":
+    case "carneJoven":
+    case "+65anos":
+      return (precioBase - precioBase * 0.25);
+      break;
+    case "packFamiliar3":
+    case "packFamiliar4":
+      return (precioBase - precioBase * 0.35);
+      break;
+    case "pack10":
+      return (precioBase - precioBase * 0.21);
+      break;
+    case "club":
+      return (precioBase - precioBase * 0.2);
+      break;
+  }
+}
+
+//..................................................//
 //FUNCIÓN CALCULAR INGRESOS ESPERADOS
 function calcularIngresosEsperados(button, id) {
   const evento = buscarEvento(id);
