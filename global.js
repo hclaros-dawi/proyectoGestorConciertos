@@ -461,6 +461,7 @@ function compraEntrada(event, id) {
     alert(`El número de entradas vendidas para este evento es: ${evento.entradasVendidas}`);
   } else if (evento.entradasVendidas + numPersonas > evento.capacidad) {
     let entradasRestantes = evento.capacidad - evento.entradasVendidas;
+    const resultadoValidacion = gestionComprarEntradas(contenedorEvento, 201);
     alert(
       `No puedes comprar tantas entradas para este evento, solo quedan ${entradasRestantes} entradas.`
     );
