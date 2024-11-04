@@ -399,7 +399,7 @@ function validarEntradasDisponibles(numEntradas) {
     return "Error: El número de entradas ingresadas no es válido.";
   }
   if (numEntradas > maxEntradas) {
-    return "Error: Ya no hay entradas disponibles.";
+    return "Ya no hay entradas disponibles.";
   }
   return true;
 }
